@@ -1,54 +1,95 @@
-// Creating the squares:
-document.addEventListener("DOMContentLoaded", () => {
-  createSquares();
+let xr = 6;
+let yk = 5;
 
-  let GuessedWords = [[]];
-  let availableSpace = 1;
+let raekke = 0;
+let kolonne = 0;
 
-  let word = "Dairy";
+let ordliste = ["paper", "maker", "pulse", "house", "loser"];
 
-  const keys = document.querySelectorAll(".keyboard-row button");
+let gameOver = false;
+let ord = ordliste[Math.floor(Math.random() * ordliste.length)].toUpperCase();
 
-  function HandleSubmitWord() {}
+window.onload = function () {
+  plade();
+};
 
-  function getCurrentWorldArray() {
-    const numberOfGuessedWords = GuessedWords.length;
-    return GuessedWords[numberOfGuessedWords - 1];
-  }
-
-  function UpdateGuessedWords(letter) {
-    const CurrentWorldArray = getCurrentWorldArray();
-
-    if (CurrentWorldArray && CurrentWorldArray.length < 5) {
-      CurrentWorldArray.push(letter);
-
-      const availableSpaceEl = document.getElementById(String(availableSpace));
-      availableSpace = availableSpace + 1;
-
-      availableSpaceEl.textContent = letter;
+function plade() {
+  for (let r = 0; r < 6; r++) {
+    for (let k = 0; k < 5; k++) {
+      let felter = document.createElement("span");
+      felter.id = r.toString() + "-" + k.toString();
+      felter.classList.add("felter");
+      felter.innerText = "";
+      document.getElementById("board").appendChild(felter);
     }
   }
 
-  function createSquares() {
-    const gameBoard = document.getElementById("board");
-
-    for (let index = 0; index < 30; index++) {
-      let square = document.createElement("div");
-      square.classList.add("square");
-      square.setAttribute("id", index + 1);
-      gameBoard.appendChild(square);
-    }
-  }
-
-  for (let i = 0; i < keys.length; i++) {
-    keys[i].onclick = ({ target }) => {
-      const letter = target.getAttribute("data-key");
-
-      UpdateGuessedWords(letter);
-
-      if (letter === "Enter") {
-        HandleSubmitWord();
+  document.addEventListener("keyup", (e) => {
+    if (gameOver) return;
+    if ("KeyA" <= e.code && e.code <= "KeyZ") {
+      if (kolonne < 5) {
+        let felt = document.getElementById(
+          raekke.toString() + "-" + kolonne.toString()
+        );
+        if (felt.innerText == "") {
+          felt.innerText = e.code[3];
+          kolonne += 1;
+        }
       }
-    };
+    } else if (e.code == "Backspace") {
+      if (0 < kolonne && kolonne <= 5) {
+        kolonne -= 1;
+      }
+      let felt = document.getElementById(
+        raekke.toString() + "-" + kolonne.toString()
+      );
+      felt.innerText = "";
+    } else if (e.code == "Enter") {
+      update();
+      raekke += 1;
+      kolonne = 0;
+    }
+    if (!gameOver && raekke == xr) {
+      gameOver = true;
+      document.getElementById("answer").innerText = ord;
+    }
+  });
+}
+
+function update() {
+  let korrekt = 0;
+  let antalBogstav = {};
+  for (let i = 0; i < ord.length; i++) {
+    bogstav = ord[i];
+    if (antalBogstav[bogstav]) {
+      antalBogstav[bogstav] += 1;
+    } else {
+      antalBogstav[bogstav] = 1;
+    }
   }
-});
+  for (let k = 0; k < 5; k++) {
+    let felt = document.getElementById(raekke.toString() + "-" + k.toString());
+    let bogstav = felt.innerText;
+
+    if (ord[k] == bogstav) {
+      felt.classList.add("korrekt");
+      korrekt += 1;
+      antalBogstav[bogstav] -= 1;
+    }
+    if (korrekt == yk) {
+      gameOver = true;
+    }
+  }
+  for (let k = 0; k < 5; k++) {
+    let felt = document.getElementById(raekke.toString() + "-" + k.toString());
+    let bogstav = felt.innerText;
+    if (!felt.classList.contains("korrekt")) {
+      if (ord.includes(bogstav) && antalBogstav[bogstav] > 0) {
+        felt.classList.add("forkertPlacering");
+        antalBogstav[bogstav] -= 1;
+      } else {
+        felt.classList.add("ingenAdem");
+      }
+    }
+  }
+}
