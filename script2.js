@@ -5,10 +5,9 @@ let kolonne = 0;
 let raekke = 0;
 
 let ordliste = [];
-let ord = " ";
+let ord = "";
 
 let gameOver = false;
-
 getText("/Assets/wordle.txt");
 async function getText(file) {
   let myObject = await fetch(file);
@@ -16,7 +15,6 @@ async function getText(file) {
   ordliste = myText.split(" ");
   ord = ordliste[Math.floor(Math.random() * ordliste.length)].toUpperCase();
 }
-
 plade();
 //e.code fortæller hvilken tast på keyboardet der bliver trykket på
 function plade() {
@@ -58,7 +56,7 @@ function plade() {
 
 function update() {
   let korrekt = 0;
-  let antalBogstav = {};
+  let antalBogstav = {}; //.map der tæller hvor gange bogstaver optræder i et ord
   for (let i = 0; i < ord.length; i++) {
     bogstav = ord[i];
     if (antalBogstav[bogstav]) {
@@ -66,11 +64,11 @@ function update() {
     } else {
       antalBogstav[bogstav] = 1;
     }
-  }
+  } //antal korrekte bogstaver
   for (let k = 0; k < 5; k++) {
     let felt = document.getElementById(kolonne.toString() + "-" + k.toString());
     let bogstav = felt.innerText;
-
+    //hvis indexet (k) i ordet er rigtigt får den korrekt style fra css
     if (ord[k] == bogstav) {
       felt.classList.add("korrekt");
       korrekt += 1;
@@ -84,7 +82,7 @@ function update() {
     let felt = document.getElementById(kolonne.toString() + "-" + k.toString());
     let bogstav = felt.innerText;
     if (!felt.classList.contains("korrekt")) {
-      if (ord.includes(bogstav) && antalBogstav[bogstav] > 0) {
+      if (ord.includes(bogstav) && antalBogstav[bogstav] >= 1) {
         felt.classList.add("forkertPlacering");
         antalBogstav[bogstav] -= 1;
       } else {
