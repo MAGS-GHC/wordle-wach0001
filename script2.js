@@ -1,4 +1,4 @@
-let yk = 6; //y aksen antal kolonner
+let yk = 6; // y aksen antal kolonner
 let xr = 5; // x aksen antal rækker
 
 let kolonne = 0;
@@ -15,7 +15,6 @@ async function getText(file) {
   ordliste = myText.split(" ");
   ord = ordliste[Math.floor(Math.random() * ordliste.length)].toUpperCase();
 }
-plade();
 //e.code fortæller hvilken tast på keyboardet der bliver trykket på
 function plade() {
   document.addEventListener("keyup", (e) => {
@@ -53,38 +52,39 @@ function plade() {
     }
   });
 }
+plade();
 
 function update() {
   let korrekt = 0;
-  let antalBogstav = {}; //.map der tæller hvor gange bogstaver optræder i et ord
+  let antalBogstav = [];
   for (let i = 0; i < ord.length; i++) {
-    bogstav = ord[i];
-    if (antalBogstav[bogstav]) {
-      antalBogstav[bogstav] += 1;
+    bs = ord[i];
+    if (antalBogstav[bs]) {
+      antalBogstav[bs] += 1; //aB[b] = aB[b]+1
     } else {
-      antalBogstav[bogstav] = 1;
+      antalBogstav[bs] = 1;
     }
   } //antal korrekte bogstaver
-  for (let k = 0; k < 5; k++) {
+  for (let k = 0; k < xr; k++) {
     let felt = document.getElementById(kolonne.toString() + "-" + k.toString());
-    let bogstav = felt.innerText;
+    let bs = felt.innerText;
     //hvis indexet (k) i ordet er rigtigt får den korrekt style fra css
-    if (ord[k] == bogstav) {
+    if (ord[k] == bs) {
       felt.classList.add("korrekt");
       korrekt += 1;
-      antalBogstav[bogstav] -= 1;
+      antalBogstav[bs] -= 1;
     }
     if (korrekt == xr) {
       gameOver = true;
     }
-  }
-  for (let k = 0; k < 5; k++) {
+  } //antal i forkert placering
+  for (let k = 0; k < xr; k++) {
     let felt = document.getElementById(kolonne.toString() + "-" + k.toString());
-    let bogstav = felt.innerText;
+    let bs = felt.innerText;
     if (!felt.classList.contains("korrekt")) {
-      if (ord.includes(bogstav) && antalBogstav[bogstav] >= 1) {
+      if (ord.includes(bs) && antalBogstav[bs] >= 1) {
         felt.classList.add("forkertPlacering");
-        antalBogstav[bogstav] -= 1;
+        antalBogstav[bs] -= 1;
       } else {
         felt.classList.add("ingenAdem");
       }
