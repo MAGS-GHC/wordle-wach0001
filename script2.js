@@ -15,13 +15,14 @@ async function getText(file) {
   ordliste = myText.split(" ");
   ord = ordliste[Math.floor(Math.random() * ordliste.length)].toUpperCase();
 }
+
 //e.code fortæller hvilken tast på keyboardet der bliver trykket på
 function plade() {
   document.addEventListener("keyup", (e) => {
     if (gameOver) return; //gør sådan at hvis du gætter rigtig kan du ikke forsætte med at skrive og spillet slutter
     if ("KeyA" <= e.code && e.code <= "KeyZ") {
       //omfanget mellem A tasten og Z tasten
-      if (raekke < 5) {
+      if (raekke < xr) {
         let felt = document.getElementById(
           kolonne.toString() + "-" + raekke.toString()
         );
@@ -41,8 +42,8 @@ function plade() {
       felt.innerText = "";
     } else if (e.code == "Enter") {
       //når man trykker enter går man 1 videre i kolonnen, og rækken bliver nulstillet så den starter fra 0 igen
-      update(); //fx 0.4 enter ny kolonne 1.0
-      kolonne += 1;
+      update();
+      kolonne += 1; //fx 0.4 enter ny kolonne 1.0
       raekke = 0;
     }
     if (!gameOver && kolonne == yk) {
@@ -56,23 +57,27 @@ plade();
 
 function update() {
   let korrekt = 0;
-  let antalBogstav = [];
+  let sumafhverBogstav = [];
   for (let i = 0; i < ord.length; i++) {
     bs = ord[i];
-    if (antalBogstav[bs]) {
-      antalBogstav[bs] += 1; //aB[b] = aB[b]+1
+    if (sumafhverBogstav[bs]) {
+      sumafhverBogstav[bs] += 1;
     } else {
-      antalBogstav[bs] = 1;
+      sumafhverBogstav[bs] = 1;
     }
+    console.log("loop1");
+    console.log(sumafhverBogstav);
   } //antal korrekte bogstaver
   for (let k = 0; k < xr; k++) {
     let felt = document.getElementById(kolonne.toString() + "-" + k.toString());
     let bs = felt.innerText;
-    //hvis indexet (k) i ordet er rigtigt får den korrekt style fra css
+    //hvis indexet (k) i ordet er rigtigt får den korrekte css styling
     if (ord[k] == bs) {
       felt.classList.add("korrekt");
       korrekt += 1;
-      antalBogstav[bs] -= 1;
+      sumafhverBogstav[bs] -= 1;
+      console.log("loop2");
+      console.log(sumafhverBogstav[bs]);
     }
     if (korrekt == xr) {
       gameOver = true;
@@ -82,9 +87,11 @@ function update() {
     let felt = document.getElementById(kolonne.toString() + "-" + k.toString());
     let bs = felt.innerText;
     if (!felt.classList.contains("korrekt")) {
-      if (ord.includes(bs) && antalBogstav[bs] >= 1) {
+      if (ord.includes(bs) && sumafhverBogstav[bs] >= 1) {
         felt.classList.add("forkertPlacering");
-        antalBogstav[bs] -= 1;
+        sumafhverBogstav[bs] -= 1;
+        console.log("loop3");
+        console.log(sumafhverBogstav);
       } else {
         felt.classList.add("ingenAdem");
       }
